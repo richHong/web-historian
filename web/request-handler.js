@@ -13,24 +13,20 @@ var headers = {
 
 exports.handleRequest = function (req, res) {
   if (req.method === 'GET') {
-    // console.log('res:',res)
-    fs.readFile('web/public/index.html', function (err, data){
-      console.log('data:',data);
-      res.writeHead(200, headers);
-      res.write(data);
-      res.end(archive.paths.list);
-    });
-    // http.get({
-    //   'url':'http://localhost/public',
-    //   'proxy': {
-    //     host: 'localhost',
-    //     port: 8080
-    //   }
-    // }, 'index.html', function (err, res) {
-    //   res.writeHead(200, headers);
-    //   res.write(response);
-    //   res.end(archive.paths.list);
-    //   })
+    if(req.url ==='/'){   
+      fs.readFile('web/public/index.html', function (err, data){
+        res.writeHead(200, headers);
+        res.write(data);
+        res.end(archive.paths.list);
+      });
+    } else if (req.url === '/www.google.com') {
+        fs.readFile('archives/sites/www.google.com', function (err, data){
+        console.log('data:',data);
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.write(data);
+        res.end(archive.paths.list);
+      });        
+    }
   } else if (req.method === 'POST') {
     res.writeHead(200, headers);
     res.end(archive.paths.list);
