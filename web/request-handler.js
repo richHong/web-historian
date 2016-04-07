@@ -1,7 +1,7 @@
 var path = require('path');
 var fs = require('fs');
 var archive = require('../helpers/archive-helpers');
-var http = require('http-request')
+var http = require('http');
 // require more modules/folders here!
 var headers = {
   "access-control-allow-origin": "*",
@@ -13,7 +13,7 @@ var headers = {
 
 exports.handleRequest = function (req, res) {
   if (req.method === 'GET') {
-    if(req.url === '/'){   
+    if(req.url === '/'){
       fs.readFile('web/public/index.html', function (err, data){
         res.writeHead(200, headers);
         res.write(data);
@@ -24,27 +24,24 @@ exports.handleRequest = function (req, res) {
         res.writeHead(200, {"Content-Type": "text/plain"});
         res.write(data);
         res.end(archive.paths.list);
-      });        
+      });
     } else {
         res.writeHead(404, {"Content-Type": "text/plain"});
         res.end();
     }
   } else if (req.method === 'POST') {
-    // console.log('req:',req)
-    // fs.open('web/archives/sites.txt', 'w', function() {
-    // });
-    // fs.close();
+    console.log(req.url);
     fs.writeFile(archive.paths.list, 'www.example.com'+'\n', function(err) {
       if (err) {
         console.log(err);
+        res.end();
       } else {
         console.log('Success');
         res.writeHead(302, {"Content-Type": "text/plain"});
-        var fileContent = fs.readFile(archive.paths.list, 'utf8');
-        console.log('fileContent:',fileContent);
-        res.end(); 
+        res.end();
       }
     });
-    //res.writeHead(302, headers);
+    res.writeHead(302, headers);
+    res.end();
   }
 };
