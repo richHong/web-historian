@@ -13,22 +13,32 @@ var headers = {
 
 exports.handleRequest = function (req, res) {
   if (req.method === 'GET') {
-    if(req.url ==='/'){   
+    if(req.url === '/'){   
       fs.readFile('web/public/index.html', function (err, data){
         res.writeHead(200, headers);
         res.write(data);
         res.end(archive.paths.list);
       });
-    } else if (req.url === '/www.google.com') {
+    } else if (req.url === '/www.google.com') {  // TODO find actual var to pass isntead of 'google.com'.
         fs.readFile('archives/sites/www.google.com', function (err, data){
-        console.log('data:',data);
         res.writeHead(200, {"Content-Type": "text/plain"});
         res.write(data);
         res.end(archive.paths.list);
       });        
+    } else {
+        res.writeHead(404, {"Content-Type": "text/plain"});
+        res.end();
     }
   } else if (req.method === 'POST') {
-    res.writeHead(200, headers);
-    res.end(archive.paths.list);
+    // fs.open('web/archives/sites.txt', 'w', function() {
+    //   fs.write(, req.url);
+    //   res.writeHead(302, headers);
+    //   res.end(); 
+    // });
+    var fd = fs.open('web/archives/sites.txt', "w");
+    fs.write(fd, req.url);
+    fs.close(fd);
+    res.writeHead(302, headers);
+    res.end(); 
   }
 };
