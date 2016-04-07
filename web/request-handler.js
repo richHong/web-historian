@@ -20,7 +20,7 @@ exports.handleRequest = function (req, res) {
         res.end(archive.paths.list);
       });
     } else if (req.url === '/www.google.com') {  // TODO find actual var to pass isntead of 'google.com'.
-        fs.readFile('archives/sites/www.google.com', function (err, data){
+      fs.readFile('archives/sites/www.google.com', function (err, data){
         res.writeHead(200, {"Content-Type": "text/plain"});
         res.write(data);
         res.end(archive.paths.list);
@@ -30,15 +30,21 @@ exports.handleRequest = function (req, res) {
         res.end();
     }
   } else if (req.method === 'POST') {
+    // console.log('req:',req)
     // fs.open('web/archives/sites.txt', 'w', function() {
-    //   fs.write(, req.url);
-    //   res.writeHead(302, headers);
-    //   res.end(); 
     // });
-    var fd = fs.open('web/archives/sites.txt', "w");
-    fs.write(fd, req.url);
-    fs.close(fd);
-    res.writeHead(302, headers);
-    res.end(); 
+    // fs.close();
+    fs.writeFile(archive.paths.list, 'www.example.com'+'\n', function(err) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log('Success');
+        res.writeHead(302, {"Content-Type": "text/plain"});
+        var fileContent = fs.readFile(archive.paths.list, 'utf8');
+        console.log('fileContent:',fileContent);
+        res.end(); 
+      }
+    });
+    //res.writeHead(302, headers);
   }
 };
